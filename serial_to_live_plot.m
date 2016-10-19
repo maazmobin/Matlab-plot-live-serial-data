@@ -3,8 +3,9 @@ clc; close all; clear all;
 myserial=serial('COM4','BaudRate',115200);
 fopen(myserial);
 
+receivingElements=3; %right now only receiving accelerometer data
 bufferSz = 100;
-vectorLen= 10;
+vectorLen= receivingElements;
 
 myVec=zeros(1,vectorLen,'double');
 testing=zeros(bufferSz,vectorLen,'double');
@@ -13,10 +14,14 @@ cvbuf = circVBuf(int64(bufferSz),int64(vectorLen));
 cvbuf.append(testing);
 
 i=0;
-w=5;
 figure(1);
 lHandle = line(nan, nan); %# Generate a blank line and return the line handle
-axis([0,bufferSz/4,-1500,1500]);
+lHandle2 = line(nan, nan);
+lHandle3 = line(nan, nan);
+ set(lHandle, 'Color', 'b','LineWidth',2);
+   set(lHandle2, 'Color', 'r','LineWidth',2);
+   set(lHandle3, 'Color', 'g','LineWidth',2);
+axis([0,bufferSz,-2500,2500]);
 xlabel('Buffer');
 ylabel('Rawdata');
 title('Accelerometer X-axis');
@@ -49,11 +54,8 @@ while i<=2500
     new = cvbuf.new; 
     fst = cvbuf.fst; 
     lst = cvbuf.lst;
-  abcd=cvbuf.raw(fst:4:lst,:);
+  abcd=cvbuf.raw(fst:1:lst,:);
 
-%   testing(1,i)=myVec(1,1);
-
-if mod(i,4)==0
 
 
 % for i = 1:bufferSz/4
@@ -61,7 +63,10 @@ if mod(i,4)==0
 %     Y = get(lHandle, 'YData');
 %     X = [X i];
 %     Y = [Y abcd(i,1)];
-    set(lHandle, 'XData', 1:bufferSz/4, 'YData', abcd(:,1));
+
+    set(lHandle, 'XData', 1:bufferSz, 'YData', abcd(:,1));
+    set(lHandle2, 'XData', 1:bufferSz, 'YData', abcd(:,2));
+    set(lHandle3, 'XData', 1:bufferSz, 'YData', abcd(:,3));
 % end
 %     
 %    subplot(3,3,1)
@@ -127,7 +132,6 @@ if mod(i,4)==0
 %    ylabel('Rawdata');
 %    title('Magneto Z-axis');
    drawnow;
-end
 end
 fclose(instrfind)
 %  if(strncmpi(dataFromSerial, 'acc', 3))
