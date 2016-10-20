@@ -4,7 +4,7 @@ myserial=serial('COM4','BaudRate',115200);
 fopen(myserial);
 
 receivingElements=3; %right now only receiving accelerometer data
-bufferSz = 100;
+bufferSz = 10;
 vectorLen= receivingElements;
 
 myVec=zeros(1,vectorLen,'double');
@@ -12,7 +12,7 @@ testing=zeros(bufferSz,vectorLen,'double');
 
 cvbuf = circVBuf(int64(bufferSz),int64(vectorLen));
 cvbuf.append(testing);
-aa=0
+
 i=0;
 figure(1);
 lHandle = line(nan, nan); %# Generate a blank line and return the line handle
@@ -25,7 +25,7 @@ axis([0,bufferSz,-200,200]);
 xlabel('Buffer');
 ylabel('Rawdata');
 title('Accelerometer X-axis');
-myserial.ReadAsyncMode='manual';
+
 while i<=2500 
 %while 1
     dataFromSerial=fscanf(myserial);
@@ -67,7 +67,7 @@ while i<=2500
     set(lHandle, 'XData', 1:bufferSz, 'YData', abcd(:,1));
     set(lHandle2, 'XData', 1:bufferSz, 'YData', abcd(:,2));
     set(lHandle3, 'XData', 1:bufferSz, 'YData', abcd(:,3));
-
+    fread(s, serialobj.BytesAvailable)
 % end
 %     
 %    subplot(3,3,1)
